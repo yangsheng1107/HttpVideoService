@@ -15,7 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,10 +24,12 @@ import com.example.videostream.VideoStreamDefine;
 import com.example.videostream.VideoViewActivity;
 import com.example.videostream.upload.UploadFormActivity;
 
-public class VideoManager extends Activity implements VideoListCallback {
+public class VideoManager extends Activity implements VideoListCallback,
+		DeleteVideoCallback {
 
 	// constant value
 	private static String LIST_URL;
+	private static String DELETE_URL;
 
 	private VideoArrayAdapter adapter = null;
 	private ListView list;
@@ -44,7 +46,7 @@ public class VideoManager extends Activity implements VideoListCallback {
 
 		VideoDefine = new VideoStreamDefine();
 		LIST_URL = VideoDefine.getserviceUrl() + "tube/videolistquery.php";
-
+		DELETE_URL = VideoDefine.getserviceUrl() + "tube/videodelquery.php";
 		new VideoListFromURL(this).execute(LIST_URL, "0");
 	}
 
@@ -53,9 +55,34 @@ public class VideoManager extends Activity implements VideoListCallback {
 		// TODO Auto-generated method stub
 		super.onRestart();
 
+		refreshVideoList();
+	}
+
+	private void initVideoListView() {
+		// TODO Auto-generated method stub
+		adapter = new VideoArrayAdapter(VideoManager.this,
+				R.layout.video_list_row_single, Items);
+
+		// add click listener
+		list.setAdapter(adapter);
+		list.setLongClickable(true);
+		list.setOnItemLongClickListener(new OnItemLongClickListener() {
+			public boolean onItemLongClick(AdapterView<?> parent, View v,
+					int position, long id) {
+				ItemMenuDialog(position);
+				return true;
+			}
+		});
+	}
+
+	private void refreshVideoList() {
 		// clear preview data
-		adapter.removeAllItem();
-		Items.clear();
+		if (adapter != null)
+			adapter.removeAllItem();
+
+		if (Items != null)
+			Items.clear();
+
 		new VideoListFromURL(this).execute(LIST_URL, "0");
 	}
 
@@ -97,6 +124,65 @@ public class VideoManager extends Activity implements VideoListCallback {
 		return super.onPrepareOptionsMenu(menu);
 	}
 
+	/**
+	 * Callback function of VideoListFromURL AsyncTask
+	 */
+	@Override
+	public void onMovieListPreExecute() {
+		// TODO Auto-generated method stub
+		pDialog = new ProgressDialog(VideoManager.this);
+		pDialog.setMessage(getResources().getString(
+				R.string.video_manager_download_progress_dialog_context));
+		pDialog.setIndeterminate(false);// 取消進度條
+		pDialog.setCancelable(true);// 開啟取消
+		pDialog.show();
+	}
+
+	@Override
+	public void doMovieListInBackground(VideoItem item) {
+		// TODO Auto-generated method stub
+		Items.add(item);
+	}
+
+	@Override
+	public void doMovieListPostExecute(String result) {
+		// TODO Auto-generated method stub
+		pDialog.dismiss();
+		if (result != null) {
+			Toast.makeText(VideoManager.this, result, Toast.LENGTH_LONG).show();
+		}
+
+		initVideoListView();
+	}
+
+	/**
+	 * Callback function of DeleteVideoFromURL AsyncTask
+	 */
+	@Override
+	public void onDeleteVideoPreExecute() {
+		// TODO Auto-generated method stub
+		pDialog = new ProgressDialog(VideoManager.this);
+		pDialog.setMessage(getResources().getString(
+				R.string.video_manager_download_progress_dialog_context));
+		pDialog.setIndeterminate(false);// 取消進度條
+		pDialog.setCancelable(true);// 開啟取消
+		pDialog.show();
+	}
+
+	@Override
+	public void doDeleteVideoPostExecute(String result) {
+		// TODO Auto-generated method stub
+		pDialog.dismiss();
+		if (result != null) {
+			Toast.makeText(VideoManager.this, result, Toast.LENGTH_LONG).show();
+		}
+
+		refreshVideoList();
+	}
+
+	/**
+	 * Menu Dialog
+	 */
 	private void displayMenuDialog() {
 		final String[] options = { "Default", "Sort by title(des)",
 				"Sort by duration", "Sort by duration(des)" };
@@ -134,47 +220,35 @@ public class VideoManager extends Activity implements VideoListCallback {
 		alert.show();
 	}
 
-	/**
-	 * Callback function of VideoListFromURL AsyncTask
-	 */
-	@Override
-	public void onMovieListPreExecute() {
-		// TODO Auto-generated method stub
-		pDialog = new ProgressDialog(VideoManager.this);
-		pDialog.setMessage(getResources().getString(
-				R.string.video_manager_download_progress_dialog_context));
-		pDialog.setIndeterminate(false);// 取消進度條
-		pDialog.setCancelable(true);// 開啟取消
-		pDialog.show();
-	}
+	private void ItemMenuDialog(final int itemId) {
+		final String[] options = { "Play", "Delete" };
 
-	@Override
-	public void doMovieListInBackground(VideoItem item) {
-		// TODO Auto-generated method stub
-		Items.add(item);
-	}
-
-	@Override
-	public void doMovieListPostExecute(String result) {
-		// TODO Auto-generated method stub
-		pDialog.dismiss();
-		if (result != null) {
-			Toast.makeText(VideoManager.this, result, Toast.LENGTH_LONG).show();
-		}
-
-		adapter = new VideoArrayAdapter(VideoManager.this,
-				R.layout.video_list_row_single, Items);
-		list.setAdapter(adapter);
-		list.setOnItemClickListener(new OnItemClickListener() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getResources().getString(
+				R.string.video_manager_selection_dialog_title));
+		builder.setItems(options, new DialogInterface.OnClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(VideoManager.this,
-						VideoViewActivity.class);
-				intent.putExtra("videoUrl", Items.get(position).getVideoUrl());
-				startActivity(intent);
+			public void onClick(DialogInterface dialog, int position) {
+				// Do something with the selection
+				switch (position) {
+				case 0:
+					Intent intent = new Intent(VideoManager.this,
+							VideoViewActivity.class);
+					intent.putExtra("videoUrl", Items.get(itemId).getVideoUrl());
+					startActivity(intent);
+					break;
+				case 1:
+					new DeleteVideoFromURL(VideoManager.this).execute(
+							DELETE_URL, Items.get(itemId).getTitle());
+					break;
+				default:
+					break;
+				}
+
 			}
 		});
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
+
 }
