@@ -1,0 +1,14 @@
+CREATE DATABASE videoservice;
+
+CREATE TABLE `videolists` (
+`id` int(4) NOT NULL auto_increment,
+`title` varchar(65) NOT NULL default '',
+`thumb_url` varchar(256) NOT NULL default '',
+`video_url` varchar(256) NOT NULL default '',
+`duration` varchar(256) NOT NULL default '',
+`description` varchar(256) NOT NULL default '',
+PRIMARY KEY (`id`)
+) 
+
+INSERT INTO `videolists` VALUES (1, 'Avengers', 'thumb/Avengers.jpg', 'video/Avengers.mp4', '00:01:57', 'Avengers');
+INSERT INTO `videolists` VALUES (2, 'Avengers: Age of Ultron', 'thumb/Avengers2.jpg', 'video/Avengers2.mp4', '00:02:30', 'Avengers: Age of Ultron');

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/fd_Icon1"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:contentDescription="@string/file_row_image_content_description" >
+
+    </ImageView>
+
+    <TextView
+        android:id="@+id/TextViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dip"
+        android:layout_marginTop="5dip"
+        android:layout_toRightOf="@+id/fd_Icon1"
+        android:singleLine="true"
+        android:text="@string/file_row_title"
+        android:textStyle="bold" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/TextViewDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextViewTitle"
+        android:layout_marginLeft="5dip"
+        android:layout_toRightOf="@+id/fd_Icon1"
+        android:text="@string/file_row_description" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/TextViewDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/TextViewTitle"
+        android:layout_marginLeft="5dip"
+        android:text="@string/file_row_duration" >
+    </TextView>
+
+</RelativeLayout>

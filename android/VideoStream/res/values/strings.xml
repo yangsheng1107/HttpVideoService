@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">VideoStream</string>
+    <string name="hello_world">Hello world!</string>
+ 
+    <!-- file row single initial description -->    
+    <string name="file_row_image_content_description">icon</string>
+    <string name="file_row_title">Title</string>
+    <string name="file_row_description">Description</string>
+    <string name="file_row_duration">Duration</string>
+
+	<!-- VideoManager -->
+	<string name="video_manager_selection_dialog_title">Selection</string>
+
+
+    <string name="video_manager_download_progress_dialog_context">Loading&#8230;. Please wait</string>
+    
+	<!-- VideoManager menu -->
+	<string name="video_list_menu_quit">Quit</string>
+
+	<!-- VideoViewActivity -->  
+    <string name="video_view_activity_download_progress_dialog_context">Downloading&#8230;. Please wait</string>  
+	
+	<!-- VideoViewActivity menu -->          
+    <string name="video_view_menu_download">Download</string>          
+    <string name="video_list_menu_upload">Upload</string>  
+
+    <!-- UploadFormActivity activity -->
+    <string name="main_activity_upload_btn">Click To Upload File</string>
+    <string name="main_activity_upload_text">Download file path : </string>
+    <string name="main_activity_uploading_progress_dialog_context">Uploading file. Please wait&#8230;</string>
+    <string name="video_list_menu_sort">Sort</string>
+
+    <string name="upload_form_textview_path">Path:</string>
+    <string name="upload_form_textview_name">Name:</string>
+    <string name="upload_form_textview_duration">Duration:</string>
+    <string name="upload_form_textview_description">Description:</string>
+    <string name="upload_form_edittext_title_hint">Plz input title here</string>
+    <string name="upload_form_edittext_duration_hint">Plz input duration here</string>
+    <string name="upload_form_edittext_description_hint">Plz input description here</string>
+    <string name="upload_form_edittext_path_hint">Click here to select file</string>
+   
+</resources>
